@@ -1,6 +1,6 @@
 {
   "name": "rise-cec-monitor",
-  "version": "2.0.2-3",
+  "version": "2.0.2-4",
   "description": "HDMI-CEC library with a simple monitor written on ES6 to make cec enabled apps.",
   "author": {
     "name": "SENZIL SRL",
@@ -61,8 +61,7 @@
     "build": "npm run lint && babel src -d lib",
     "test": "babel src -d lib && node test/test.js",
     "prepublishOnly": "npm run build",
-    "postinstall": "npm run build",
-    "release": "npm version --no-git-tag-version prerelease && git add ."
+    "release": "npm run build && npm version --no-git-tag-version prerelease && git add ."
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
