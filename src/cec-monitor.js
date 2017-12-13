@@ -13,7 +13,6 @@ import CECTimeoutError from './TimeoutError'
 import StateManager from './StateManager'
 import Convert from './Convert'
 import Validate from './Validate'
-import deasyncPromise from 'deasync-promise'
 
 export default class CECMonitor extends EventEmitter {
 
@@ -47,9 +46,11 @@ export default class CECMonitor extends EventEmitter {
     }
     this.cache = {
       enable: true,
-      autorefresh: true,
+      autorefresh: false,
       timeout: 30 //in seconds
     }
+
+    if (options.cache.autorefresh) {throw Error('autorefresh is disabled')}
 
     this.OSDName = OSDName || 'cec-monitor'
     this.com_port = options.com_port || ''
@@ -443,23 +444,9 @@ const _getUpdatedDeviceState = function (address) {
 
   if (this.cache.enable && this.cache.timeout > 0 && currentState.timestamp < Date.now() - this.cache.timeout * 1000) {
     this.emit(CECMonitor.EVENTS._EXPIREDCACHE, currentState)
-
-    if (this.cache.autorefresh) {
-      return deasyncPromise(_getUpdatedDeviceStateAsync.call(this, address))
-    }
   }
 
   return currentState
-}
-
-const _getUpdatedDeviceStateAsync = function(address) {
-  const primary = this.GetLogicalAddress()
-  return this.SendCommand(primary, address, CEC.Opcode.GIVE_DEVICE_POWER_STATUS, CECMonitor.EVENTS.REPORT_POWER_STATUS)
-    .catch(() => this.state_manager[address].status = CEC.PowerStatus.UNKNOWN)
-    .then(() => {
-      this.emit(CECMonitor.EVENTS._UPDATEDCACHE, this.state_manager[address])
-      return this.state_manager[address]
-    })
 }
 
 const _eventPromise = function(target, event, milisecondsToWait) {
