@@ -1,6 +1,8 @@
 # cec-monitor
 HDMI-CEC library with a simple monitor written on ES6 to make cec enabled apps.
 
+# Cache autorefresh is DISABLED in this fork to avoid deasync dependency
+
 ## Install
 
 ```bash
