@@ -50,7 +50,9 @@ export default class CECMonitor extends EventEmitter {
       timeout: 30 //in seconds
     }
 
-    if (options.cache.autorefresh) {throw Error('autorefresh is disabled')}
+    if (options &&
+    options.cache &&
+    options.cache.autorefresh) {throw Error('autorefresh is disabled')}
 
     this.OSDName = OSDName || 'cec-monitor'
     this.com_port = options.com_port || ''
